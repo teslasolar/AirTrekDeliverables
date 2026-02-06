@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/chat.css">
+  <link rel="stylesheet" href="css/tools.css">
 </head>
 <body>
   <div class="app-container">
@@ -28,6 +29,8 @@
           <button data-view="investor">Investor</button>
         </div>
         <button class="chat-toggle-btn" id="chatToggle" title="AI Assistant">AI</button>
+        <button class="tool-btn" id="collabToggle" title="Collaborative Chat">Collab</button>
+        <button class="tool-btn" id="githubToggle" title="GitHub Reader">GitHub</button>
       </div>
     </header>
 
@@ -75,7 +78,91 @@
     <div class="chat-status" id="chatStatus">Ready</div>
   </div>
 
+  <!-- Collab Chat Panel -->
+  <div class="tool-panel" id="collabPanel">
+    <div class="tool-panel-header">
+      <span class="tool-panel-title">Collab Chat</span>
+      <span class="tool-panel-badge collab-badge">P2P</span>
+      <button class="tool-panel-close" id="collabClose">&times;</button>
+    </div>
+
+    <div class="collab-tabs">
+      <button class="collab-tab active" data-tab="collabChatPane">Chat</button>
+      <button class="collab-tab" data-tab="collabConnectPane">Connect</button>
+    </div>
+
+    <!-- Chat Pane -->
+    <div class="collab-tab-pane active" id="collabChatPane">
+      <div class="collab-name-row">
+        <span class="collab-name-label">Name:</span>
+        <input type="text" class="collab-name-input" id="collabName" placeholder="Your display name">
+      </div>
+      <div class="collab-users" id="collabUsers"></div>
+      <div class="collab-messages" id="collabMessages"></div>
+      <div class="collab-input-area">
+        <input type="text" class="collab-input" id="collabInput" placeholder="Type a message...">
+        <button class="collab-send" id="collabSend">Send</button>
+      </div>
+    </div>
+
+    <!-- Connect Pane (WebRTC) -->
+    <div class="collab-tab-pane" id="collabConnectPane">
+      <div class="collab-connect">
+        <div class="collab-connect-section">
+          <h4>Create a Room</h4>
+          <p>Generate an offer code and share it with a peer to connect directly via WebRTC.</p>
+          <button class="collab-connect-btn" id="collabCreate">Create Room</button>
+          <textarea id="collabOffer" placeholder="Offer code will appear here..." style="display:none"></textarea>
+        </div>
+        <div class="collab-connect-section">
+          <h4>Join a Room</h4>
+          <p>Paste the offer code from the host, then click Join. Share the answer code back.</p>
+          <textarea id="collabAnswer" placeholder="Paste offer code here, or answer code will appear..."></textarea>
+          <button class="collab-connect-btn" id="collabJoin">Join Room</button>
+        </div>
+        <div class="collab-connect-section">
+          <h4>Accept Answer</h4>
+          <p>If you are the host, paste the answer code from the joiner to complete the connection.</p>
+          <button class="collab-connect-btn" id="collabAccept">Accept Answer</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="collab-status" id="collabStatus">Initializing...</div>
+  </div>
+
+  <!-- GitHub Reader Panel -->
+  <div class="tool-panel" id="githubPanel">
+    <div class="tool-panel-header">
+      <span class="tool-panel-title">GitHub Reader</span>
+      <span class="tool-panel-badge gh-badge">API</span>
+      <button class="tool-panel-close" id="githubClose">&times;</button>
+    </div>
+    <div class="gh-body">
+      <div class="gh-input-bar">
+        <input type="text" class="gh-repo-input" id="ghRepoInput"
+               placeholder="owner/repo or GitHub URL" value="teslasolar/AirTrekDeliverables">
+        <button class="gh-load-btn" id="ghLoadBtn">Load</button>
+      </div>
+      <div class="gh-repo-header" id="ghRepoHeader" style="display:none">
+        <div class="gh-repo-name" id="ghRepoName"></div>
+        <div class="gh-repo-meta" id="ghRepoMeta"></div>
+        <div class="gh-repo-desc" id="ghRepoDesc"></div>
+      </div>
+      <div class="gh-breadcrumb" id="ghBreadcrumb" style="display:none"></div>
+      <div class="gh-file-list" id="ghFileList"></div>
+      <div class="gh-file-viewer" id="ghFileViewer">
+        <div class="gh-file-info" id="ghFileInfo"></div>
+        <pre class="gh-code" id="ghCode"></pre>
+      </div>
+    </div>
+    <div class="gh-status" id="ghStatus">Enter a repository to browse</div>
+  </div>
+
   <script src="js/app.js"></script>
   <script src="js/chat.js"></script>
+  <script src="js/webllm.js"></script>
+  <script src="js/collab.js"></script>
+  <script src="js/github.js"></script>
 </body>
 </html>

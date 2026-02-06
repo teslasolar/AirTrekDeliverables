@@ -1,0 +1,362 @@
+/* ============================================================
+   AIRTREK — Tool Panel Styles
+   Collab Chat, GitHub Reader, WebLLM controls
+   ============================================================ */
+
+/* --- Shared Toggle Buttons (top bar) --- */
+.tool-btn {
+  background: var(--bg-accent);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  padding: 5px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+.tool-btn:hover {
+  border-color: var(--border-light);
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+/* --- Shared Tool Panel --- */
+.tool-panel {
+  position: fixed;
+  top: 0; right: 0;
+  width: 460px; max-width: 95vw;
+  height: 100vh;
+  background: var(--bg-secondary);
+  border-left: 1px solid var(--border);
+  z-index: 250;
+  display: none;
+  flex-direction: column;
+  box-shadow: -4px 0 30px rgba(0,0,0,0.5);
+  transform: translateX(100%);
+  transition: transform 0.25s ease;
+}
+.tool-panel.open {
+  display: flex;
+  transform: translateX(0);
+}
+
+.tool-panel-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-card);
+  flex-shrink: 0;
+}
+.tool-panel-title {
+  font-weight: 600; font-size: 0.95rem; flex: 1;
+}
+.tool-panel-badge {
+  font-size: 0.63rem; padding: 2px 7px; border-radius: 8px;
+  text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;
+}
+.tool-panel-close {
+  background: none; border: none; color: var(--text-muted);
+  cursor: pointer; font-size: 1.2rem; padding: 2px 6px; line-height: 1;
+}
+.tool-panel-close:hover { color: var(--text-primary); }
+
+/* =============================================
+   COLLAB CHAT
+   ============================================= */
+.collab-badge { background: rgba(52,211,153,0.15); color: var(--accent-green); }
+
+/* --- Tabs --- */
+.collab-tabs {
+  display: flex; border-bottom: 1px solid var(--border);
+  background: var(--bg-card); flex-shrink: 0;
+}
+.collab-tab {
+  flex: 1; padding: 9px 0; text-align: center;
+  font-size: 0.8rem; color: var(--text-muted);
+  cursor: pointer; border-bottom: 2px solid transparent;
+  transition: all var(--transition); font-weight: 500;
+  background: none; border-top: none; border-left: none; border-right: none;
+  font-family: var(--font-sans);
+}
+.collab-tab:hover { color: var(--text-secondary); background: var(--bg-hover); }
+.collab-tab.active { color: var(--accent-green); border-bottom-color: var(--accent-green); }
+
+.collab-tab-pane { display: none; flex: 1; flex-direction: column; overflow: hidden; }
+.collab-tab-pane.active { display: flex; }
+
+/* --- Name input --- */
+.collab-name-row {
+  display: flex; gap: 8px; padding: 10px 16px;
+  border-bottom: 1px solid var(--border); flex-shrink: 0;
+}
+.collab-name-input {
+  flex: 1; background: var(--bg-accent); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 6px 10px;
+  color: var(--text-primary); font-size: 0.83rem;
+  font-family: var(--font-sans); outline: none;
+}
+.collab-name-input:focus { border-color: var(--accent-green); }
+.collab-name-label {
+  font-size: 0.73rem; color: var(--text-muted); align-self: center;
+  white-space: nowrap;
+}
+
+/* --- Users list --- */
+.collab-users {
+  padding: 8px 16px; border-bottom: 1px solid var(--border);
+  display: flex; gap: 12px; flex-wrap: wrap; flex-shrink: 0;
+}
+.collab-user {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 0.78rem; color: var(--text-secondary);
+}
+.collab-user.self { color: var(--accent-green); font-weight: 500; }
+.collab-user-dot {
+  width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+}
+.collab-user-dot.online { background: var(--accent-green); }
+.collab-user-dot.offline { background: var(--text-muted); }
+
+/* --- Messages --- */
+.collab-messages {
+  flex: 1; overflow-y: auto; padding: 12px 16px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.collab-msg {
+  padding: 8px 12px; border-radius: 10px; max-width: 88%;
+}
+.collab-msg.self {
+  align-self: flex-end;
+  background: var(--accent-green);
+  color: #0a2e1c;
+  border-bottom-right-radius: 3px;
+}
+.collab-msg.peer {
+  align-self: flex-start;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-bottom-left-radius: 3px;
+}
+.collab-msg.system {
+  align-self: center; max-width: 100%;
+  background: rgba(6,182,212,0.08);
+  border: 1px solid rgba(6,182,212,0.2);
+  color: var(--text-secondary);
+  font-size: 0.78rem; text-align: center;
+  border-radius: 8px;
+}
+.collab-msg-header {
+  display: flex; justify-content: space-between; gap: 12px;
+  margin-bottom: 3px;
+}
+.collab-msg-name {
+  font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.collab-msg.self .collab-msg-name { color: #0a4025; }
+.collab-msg.peer .collab-msg-name { color: var(--accent-blue); }
+.collab-msg-time { font-size: 0.65rem; opacity: 0.6; }
+.collab-msg-body { font-size: 0.85rem; line-height: 1.4; word-wrap: break-word; }
+
+/* --- Chat input --- */
+.collab-input-area {
+  display: flex; gap: 8px; padding: 12px 16px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-card); flex-shrink: 0;
+}
+.collab-input {
+  flex: 1; background: var(--bg-accent); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 8px 12px;
+  color: var(--text-primary); font-size: 0.85rem;
+  font-family: var(--font-sans); outline: none;
+}
+.collab-input:focus { border-color: var(--accent-green); }
+.collab-send {
+  background: var(--accent-green); border: none; color: #0a2e1c;
+  padding: 8px 16px; border-radius: var(--radius-sm);
+  font-size: 0.83rem; font-weight: 600; cursor: pointer;
+  font-family: var(--font-sans);
+}
+.collab-send:hover { opacity: 0.9; }
+.collab-status {
+  font-size: 0.68rem; padding: 4px 16px; text-align: center;
+  color: var(--text-muted); flex-shrink: 0;
+  border-top: 1px solid var(--border); background: var(--bg-card);
+}
+.collab-status.ready { color: var(--accent-green); }
+.collab-status.error { color: var(--accent-red); }
+.collab-status.loading { color: var(--accent-orange); }
+
+/* --- Connect tab (WebRTC) --- */
+.collab-connect {
+  padding: 16px; overflow-y: auto; flex: 1;
+}
+.collab-connect h4 {
+  font-size: 0.85rem; margin-bottom: 6px; color: var(--text-primary);
+}
+.collab-connect p {
+  font-size: 0.78rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.5;
+}
+.collab-connect-btn {
+  background: var(--accent-blue); border: none; color: white;
+  padding: 8px 18px; border-radius: var(--radius-sm);
+  font-size: 0.83rem; font-weight: 500; cursor: pointer;
+  font-family: var(--font-sans); margin-bottom: 12px;
+}
+.collab-connect-btn:hover { opacity: 0.9; }
+.collab-connect textarea {
+  width: 100%; min-height: 80px; background: var(--bg-accent);
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  color: var(--text-primary); font-family: var(--font-mono);
+  font-size: 0.73rem; padding: 8px; margin-bottom: 12px;
+  resize: vertical; outline: none;
+}
+.collab-connect textarea:focus { border-color: var(--accent-blue); }
+.collab-connect-section {
+  margin-bottom: 20px; padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* =============================================
+   GITHUB READER
+   ============================================= */
+.gh-badge { background: rgba(79,123,247,0.15); color: var(--accent-blue); }
+
+.gh-body { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+/* --- Repo input bar --- */
+.gh-input-bar {
+  display: flex; gap: 8px; padding: 12px 16px;
+  border-bottom: 1px solid var(--border); flex-shrink: 0;
+}
+.gh-repo-input {
+  flex: 1; background: var(--bg-accent); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 7px 12px;
+  color: var(--text-primary); font-size: 0.83rem;
+  font-family: var(--font-mono); outline: none;
+}
+.gh-repo-input:focus { border-color: var(--accent-blue); }
+.gh-repo-input::placeholder { color: var(--text-muted); }
+.gh-load-btn {
+  background: var(--accent-blue); border: none; color: white;
+  padding: 7px 16px; border-radius: var(--radius-sm);
+  font-size: 0.83rem; font-weight: 500; cursor: pointer;
+  font-family: var(--font-sans); white-space: nowrap;
+}
+.gh-load-btn:hover { opacity: 0.9; }
+
+/* --- Repo header --- */
+.gh-repo-header {
+  padding: 12px 16px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+}
+.gh-repo-name { font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; }
+.gh-repo-meta { display: flex; gap: 10px; flex-wrap: wrap; }
+.gh-repo-stat {
+  font-size: 0.73rem; color: var(--text-muted);
+  background: var(--bg-accent); padding: 2px 8px;
+  border-radius: 8px; border: 1px solid var(--border);
+}
+.gh-repo-desc {
+  font-size: 0.8rem; color: var(--text-secondary);
+  margin-top: 6px; line-height: 1.4;
+}
+
+/* --- Breadcrumb --- */
+.gh-breadcrumb {
+  padding: 8px 16px; border-bottom: 1px solid var(--border);
+  font-size: 0.78rem; display: flex; align-items: center;
+  gap: 4px; flex-shrink: 0; flex-wrap: wrap;
+  background: var(--bg-card);
+}
+.gh-crumb {
+  color: var(--accent-blue); cursor: pointer;
+}
+.gh-crumb:hover { text-decoration: underline; }
+.gh-crumb.current { color: var(--text-primary); cursor: default; }
+.gh-crumb.current:hover { text-decoration: none; }
+.gh-crumb-sep { color: var(--text-muted); }
+.gh-back-btn {
+  background: none; border: none; color: var(--text-muted);
+  cursor: pointer; font-size: 0.85rem; padding: 2px 6px;
+  margin-right: 4px;
+}
+.gh-back-btn:hover { color: var(--text-primary); }
+
+/* --- File list --- */
+.gh-file-list {
+  flex: 1; overflow-y: auto;
+}
+.gh-file-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 16px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer; transition: background var(--transition);
+  font-size: 0.85rem;
+}
+.gh-file-row:hover { background: var(--bg-hover); }
+.gh-file-icon { font-size: 0.85rem; flex-shrink: 0; width: 20px; text-align: center; }
+.gh-file-name { flex: 1; color: var(--text-primary); }
+.gh-file-size { font-size: 0.73rem; color: var(--text-muted); font-family: var(--font-mono); }
+
+/* --- File viewer --- */
+.gh-file-viewer {
+  flex: 1; overflow-y: auto; display: none;
+}
+.gh-file-info {
+  display: flex; gap: 16px; padding: 8px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.73rem; color: var(--text-muted);
+  background: var(--bg-card); flex-shrink: 0;
+}
+.gh-code {
+  margin: 0; padding: 0; font-family: var(--font-mono);
+  font-size: 0.8rem; line-height: 1.55; background: var(--bg-primary);
+  overflow-x: auto;
+}
+.gh-code-line {
+  display: flex; padding: 0 16px;
+}
+.gh-code-line:hover { background: rgba(255,255,255,0.02); }
+.gh-line-num {
+  color: var(--text-muted); min-width: 45px; text-align: right;
+  padding-right: 16px; user-select: none; flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  margin-right: 16px;
+}
+.gh-line-code {
+  white-space: pre; color: var(--text-secondary);
+}
+.gh-truncated {
+  padding: 12px 16px; color: var(--text-muted);
+  font-style: italic; text-align: center;
+  border-top: 1px solid var(--border);
+}
+.gh-loading {
+  padding: 40px; text-align: center; color: var(--text-muted);
+}
+.gh-error {
+  padding: 20px 16px; color: var(--accent-red);
+  font-size: 0.85rem;
+}
+.gh-binary-notice {
+  padding: 40px; text-align: center; color: var(--text-muted);
+}
+.gh-image-preview { max-width: 100%; padding: 16px; }
+
+/* --- Status --- */
+.gh-status {
+  font-size: 0.68rem; padding: 4px 16px; text-align: center;
+  color: var(--text-muted); flex-shrink: 0;
+  border-top: 1px solid var(--border); background: var(--bg-card);
+}
+.gh-status.ready { color: var(--accent-green); }
+.gh-status.error { color: var(--accent-red); }
+.gh-status.loading { color: var(--accent-orange); }
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .tool-panel { width: 100vw; }
+}
