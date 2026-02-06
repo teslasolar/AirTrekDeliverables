@@ -1,0 +1,25 @@
+<div class="section status-section">
+  <h2 class="section-title">System Status</h2>
+  <p class="section-desc">
+    Live health checks for AirTrek services. Monitored from your browser every 60 seconds.
+  </p>
+
+  <!-- Overall status banner -->
+  <div class="status-banner status-checking" id="statusBanner">
+    <span class="status-dot status-checking"></span>
+    <span class="status-banner-text">Checking Systems...</span>
+    <span class="status-banner-time"></span>
+  </div>
+
+  <!-- Per-endpoint results rendered by js/status.js -->
+  <div id="statusDashboard" class="status-dashboard"></div>
+
+  <div class="status-footer">
+    <span class="status-footer-note">
+      Checks run client-side via fetch. CORS-restricted endpoints show as "Reachable" when the server responds but blocks cross-origin reads.
+    </span>
+    <button class="btn btn-outline btn-sm" onclick="AirTrekStatus.check()">
+      Refresh Now
+    </button>
+  </div>
+</div>
