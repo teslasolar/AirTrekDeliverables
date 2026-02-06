@@ -314,6 +314,44 @@ The closest threats come from different directions -- Protege/Pundi on data owne
 
 ---
 
+## Revenue Model: Two Engines
+
+### AirTrek Inc. (For-Profit) -- The Experience Engine
+
+**Consumer subscriptions:**
+- Explorer: $9.99/mo
+- Voyager: $19.99/mo
+- Patron: $49.99/mo
+- Free tier is permanent -- no empathy feature ever goes behind a paywall
+
+**Trekcoin microtransactions:** Users earn trekcoins through engagement (insights, pattern discovery) and spend them on premium features:
+- Full Triad queries: 4 trekcoins
+- Voice synthesis: 2 trekcoins
+- Song generation: 8 trekcoins
+- This creates internal economy velocity
+
+**Enterprise/education licensing:** Curriculum-integrated experiences for schools with teacher dashboards tracking student empathy progression. SEL (social-emotional learning) is a $3.1B market growing 25% annually -- and schools are desperate for tools that aren't worksheets.
+
+**SYMBEYOND licensing:** The interaction standard (lambda.brother AND NOT lambda.tool) licensed to other companies building human-AI systems across healthcare, manufacturing, and knowledge work.
+
+### AirTrek Data Collective (DAO) -- The Dataset
+
+**Dataset licensing:** The biophysically-tagged cultural conversation data -- the only empathy-validated AI training set in existence -- licensed to AI companies training culturally-aware models. This is recurring B2B revenue that grows with every conversation on the platform.
+
+**KCC token economics:** Konomi Cube Coin (listing on South Korean exchange in process) creates liquidity. Contributors earn KCC; the DAO governs revenue distribution.
+
+### How Much
+
+**TAM:** Global edtech ($400B by 2028) + AI training data market ($30B+ by 2030) + enterprise AI collaboration ($50B+).
+
+**Near-term SAM:** SEL/empathy education ($3.1B), cultural AI training data licensing (no direct competitor -- we set the price), consumer immersive AI ($5B+ and growing).
+
+**Path to $100M ARR:** 500K consumer subscribers at blended $15/mo = $90M. Dataset licensing and enterprise contracts layer on top. The flywheel accelerates -- more users -> richer data -> higher licensing value -> more KCC rewards -> more contributors.
+
+**The key insight:** The for-profit engine funds the platform while the DAO-owned dataset becomes exponentially more valuable with scale. We make money twice -- once from the experience, once from the data it generates -- and the people who create that data own it.
+
+---
+
 ## Key Quotes
 
 > "I didn't open Pandora's box so don't blame me." -- Thomas
