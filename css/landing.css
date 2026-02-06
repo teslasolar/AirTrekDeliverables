@@ -130,6 +130,86 @@ a:hover { text-decoration: underline; }
   text-align: center; color: var(--text3); font-size: 0.8rem;
 }
 
+/* --- Factory Floor Dashboard --- */
+.factory-section { border-top: 1px solid var(--border); }
+.factory-header-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; margin-bottom: 8px; flex-wrap: wrap; }
+.factory-legend { display: flex; gap: 14px; flex-wrap: wrap; padding-top: 8px; }
+.legend-item { display: flex; align-items: center; gap: 5px; font-size: 0.73rem; color: var(--text3); }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+.factory-loading { display: flex; align-items: center; gap: 12px; color: var(--text3); font-size: 0.9rem; padding: 40px 0; justify-content: center; }
+.factory-subtitle {
+  font-size: 1rem; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
+}
+.factory-tag {
+  font-size: 0.65rem; padding: 2px 8px; border-radius: 8px;
+  background: var(--bg4); color: var(--text3); border: 1px solid var(--border);
+  text-transform: uppercase; letter-spacing: 0.04em; font-weight: 500;
+}
+
+/* Gauge + KPIs row */
+.factory-overview { display: flex; align-items: center; gap: 32px; margin-bottom: 36px; flex-wrap: wrap; }
+.factory-gauge { text-align: center; flex-shrink: 0; }
+.gauge-svg { width: 140px; height: 140px; }
+.gauge-progress { transition: stroke-dashoffset 0.8s ease; }
+.gauge-subtitle { font-size: 0.78rem; color: var(--text3); margin-top: 6px; }
+.factory-kpis { display: flex; gap: 20px; flex: 1; flex-wrap: wrap; }
+.factory-kpi {
+  background: var(--bg3); border: 1px solid var(--border); border-radius: 10px;
+  padding: 16px 20px; flex: 1; min-width: 140px;
+}
+.kpi-value { font-size: 1.3rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 2px; }
+.kpi-label { font-size: 0.8rem; font-weight: 600; color: var(--text2); }
+.kpi-desc { font-size: 0.7rem; color: var(--text3); margin-top: 4px; }
+
+/* Conveyor Pipeline */
+.factory-pipeline { margin-bottom: 36px; }
+.factory-conveyor { display: flex; align-items: center; gap: 0; }
+.conveyor-station {
+  flex: 1; background: var(--bg3); border: 1px solid var(--border); border-radius: 10px;
+  padding: 16px; text-align: center; transition: all 0.2s;
+}
+.conveyor-active { border-color: var(--blue); background: rgba(79,123,247,0.05); }
+.conveyor-label { font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; }
+.conveyor-bar-bg { height: 6px; background: var(--bg4); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+.conveyor-bar-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+.conveyor-stats { font-size: 0.73rem; color: var(--text3); font-family: var(--mono); }
+.conveyor-arrow { font-size: 0.8rem; color: var(--text3); padding: 0 6px; flex-shrink: 0; }
+
+/* Work Station Cards */
+.factory-stations { margin-bottom: 36px; }
+.factory-station-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+.factory-station-card {
+  background: var(--bg3); border: 1px solid var(--border); border-radius: 10px;
+  padding: 18px; transition: all 0.2s;
+}
+.factory-station-card:hover { border-color: var(--border2); transform: translateY(-1px); }
+.station-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.station-icon { font-size: 1.2rem; }
+.station-name { font-size: 0.9rem; font-weight: 600; }
+.station-bar-bg { height: 5px; background: var(--bg4); border-radius: 3px; overflow: hidden; margin-bottom: 10px; }
+.station-bar-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+.station-metrics { display: flex; gap: 12px; font-size: 0.75rem; color: var(--text3); margin-bottom: 8px; }
+.station-metric b { color: var(--text2); }
+.station-strip { display: flex; height: 4px; border-radius: 2px; overflow: hidden; gap: 1px; }
+.strip-seg { height: 100%; min-width: 3px; border-radius: 2px; }
+
+/* ISA-88 State Distribution */
+.factory-states { margin-bottom: 24px; }
+.factory-state-bars { display: flex; flex-direction: column; gap: 10px; }
+.state-row { display: flex; align-items: center; gap: 14px; }
+.state-label { width: 170px; font-size: 0.8rem; color: var(--text2); display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.state-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.state-bar-bg { flex: 1; height: 8px; background: var(--bg4); border-radius: 4px; overflow: hidden; }
+.state-bar-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+.state-count { font-family: var(--mono); font-size: 0.8rem; color: var(--text3); width: 30px; text-align: right; }
+
+@media (max-width: 768px) {
+  .factory-overview { flex-direction: column; align-items: center; }
+  .factory-conveyor { flex-direction: column; gap: 8px; }
+  .conveyor-arrow { transform: rotate(90deg); }
+  .state-label { width: 120px; font-size: 0.73rem; }
+}
+
 /* --- Status Dashboard --- */
 .status-section { border-top: 1px solid var(--border); }
 
