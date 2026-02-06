@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AirTrek — Document Viewer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0f1117; --bg2: #1a1d27; --bg3: #1e2130; --bg4: #252838;
+      --border: #2e3148; --border2: #3a3d52;
+      --text: #e8e9ed; --text2: #9ca0b0; --text3: #6b7084;
+      --blue: #4F7BF7; --purple: #7C5CFC; --green: #34D399;
+      --orange: #F59E0B; --red: #EF4444; --cyan: #06B6D4;
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --mono: 'JetBrains Mono', 'Fira Code', monospace;
+    }
+    html { font-size: 15px; scroll-behavior: smooth; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh; }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* --- Layout --- */
+    .layout { display: grid; grid-template-columns: 280px 1fr; grid-template-rows: 60px 1fr; min-height: 100vh; }
+
+    /* --- Header --- */
+    .top-header {
+      grid-column: 1 / -1; background: var(--bg2); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .logo-area { display: flex; align-items: center; gap: 16px; }
+    .logo {
+      font-size: 1.25rem; font-weight: 700; letter-spacing: -0.03em;
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .logo-sub { font-size: 0.78rem; color: var(--text3); }
+    .nav-links { display: flex; gap: 4px; }
+    .nav-links a {
+      padding: 6px 14px; border-radius: 6px; font-size: 0.85rem; color: var(--text2); transition: all 0.2s;
+    }
+    .nav-links a:hover { background: var(--bg4); color: var(--text); text-decoration: none; }
+    .nav-links a.active { background: var(--blue); color: white; }
+
+    /* --- Sidebar --- */
+    .doc-sidebar {
+      background: var(--bg2); border-right: 1px solid var(--border);
+      overflow-y: auto; padding: 12px 0;
+    }
+    .doc-sidebar::-webkit-scrollbar { width: 5px; }
+    .doc-sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    .sidebar-group { margin-bottom: 4px; }
+    .sidebar-group-title {
+      font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--text3); padding: 10px 18px 4px; font-weight: 600;
+      cursor: pointer; display: flex; align-items: center; gap: 6px;
+      user-select: none;
+    }
+    .sidebar-group-title:hover { color: var(--text2); }
+    .sidebar-group-title .arrow { transition: transform 0.2s; font-size: 0.6rem; }
+    .sidebar-group-title.collapsed .arrow { transform: rotate(-90deg); }
+    .sidebar-group-items { }
+    .sidebar-group-title.collapsed + .sidebar-group-items { display: none; }
+    .sidebar-link {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 18px 6px 28px; cursor: pointer; transition: all 0.15s;
+      font-size: 0.83rem; color: var(--text2); border-left: 2px solid transparent;
+    }
+    .sidebar-link:hover { background: var(--bg4); color: var(--text); text-decoration: none; }
+    .sidebar-link.active { background: var(--bg4); color: var(--text); border-left-color: var(--blue); }
+    .sidebar-link .file-icon { font-size: 0.75rem; color: var(--text3); flex-shrink: 0; }
+
+    /* --- Main Content --- */
+    .doc-main { overflow-y: auto; max-height: calc(100vh - 60px); }
+
+    /* --- Markdown Rendered Content --- */
+    .md-content {
+      max-width: 860px; margin: 0 auto; padding: 40px 48px 80px;
+    }
+    .md-content h1 {
+      font-size: 2rem; font-weight: 700; letter-spacing: -0.03em;
+      margin: 0 0 8px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
+    }
+    .md-content h2 {
+      font-size: 1.45rem; font-weight: 600; margin: 36px 0 12px;
+      padding-bottom: 8px; border-bottom: 1px solid var(--border);
+      letter-spacing: -0.02em;
+    }
+    .md-content h3 { font-size: 1.15rem; font-weight: 600; margin: 28px 0 8px; }
+    .md-content h4 { font-size: 1rem; font-weight: 600; margin: 20px 0 6px; color: var(--text2); }
+    .md-content p { margin: 0 0 14px; color: var(--text2); }
+    .md-content strong { color: var(--text); font-weight: 600; }
+    .md-content em { font-style: italic; color: var(--text2); }
+    .md-content ul, .md-content ol { margin: 0 0 14px; padding-left: 24px; color: var(--text2); }
+    .md-content li { margin-bottom: 4px; }
+    .md-content li > ul, .md-content li > ol { margin: 4px 0 0; }
+    .md-content blockquote {
+      border-left: 3px solid var(--blue); margin: 0 0 14px;
+      padding: 10px 18px; background: rgba(79,123,247,0.06);
+      border-radius: 0 8px 8px 0; color: var(--text2);
+    }
+    .md-content blockquote p { margin: 0; }
+    .md-content code {
+      font-family: var(--mono); font-size: 0.87em;
+      background: var(--bg4); padding: 2px 6px; border-radius: 4px;
+      color: var(--cyan);
+    }
+    .md-content pre {
+      background: var(--bg4); border: 1px solid var(--border); border-radius: 10px;
+      padding: 18px 20px; overflow-x: auto; margin: 0 0 18px;
+      font-family: var(--mono); font-size: 0.83rem; line-height: 1.6;
+      color: var(--text2);
+    }
+    .md-content pre code {
+      background: none; padding: 0; border-radius: 0; color: inherit; font-size: inherit;
+    }
+    .md-content table {
+      width: 100%; border-collapse: collapse; margin: 0 0 18px;
+      font-size: 0.87rem;
+    }
+    .md-content th {
+      text-align: left; font-weight: 600; font-size: 0.75rem;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      color: var(--text3); padding: 10px 12px; border-bottom: 2px solid var(--border);
+    }
+    .md-content td {
+      padding: 10px 12px; border-bottom: 1px solid var(--border);
+      color: var(--text2); vertical-align: top;
+    }
+    .md-content tr:hover td { background: rgba(255,255,255,0.02); }
+    .md-content hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+    .md-content img { max-width: 100%; border-radius: 8px; margin: 8px 0; }
+    .md-content input[type="checkbox"] { margin-right: 6px; }
+
+    /* --- File Path Bar --- */
+    .file-path-bar {
+      padding: 10px 48px; border-bottom: 1px solid var(--border);
+      background: var(--bg2); font-size: 0.78rem; color: var(--text3);
+      font-family: var(--mono); display: flex; align-items: center; gap: 8px;
+      max-width: 100%; overflow-x: auto;
+      position: sticky; top: 0; z-index: 10;
+    }
+    .file-path-bar .crumb { color: var(--text3); }
+    .file-path-bar .crumb:hover { color: var(--blue); text-decoration: none; cursor: pointer; }
+    .file-path-bar .sep { color: var(--border2); }
+
+    /* --- Loading / Error --- */
+    .doc-state {
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; padding: 80px 20px; text-align: center; color: var(--text3);
+    }
+    .doc-state h2 { color: var(--text2); font-size: 1.2rem; margin-bottom: 8px; }
+    .doc-state p { max-width: 400px; }
+    .spinner {
+      width: 32px; height: 32px; border: 3px solid var(--border);
+      border-top-color: var(--blue); border-radius: 50%;
+      animation: spin 0.8s linear infinite; margin-bottom: 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* --- Mobile --- */
+    .sidebar-toggle {
+      display: none; background: none; border: none; color: var(--text2);
+      font-size: 1.3rem; cursor: pointer; padding: 4px 8px;
+    }
+    @media (max-width: 800px) {
+      .layout { grid-template-columns: 1fr; }
+      .doc-sidebar { display: none; position: fixed; top: 60px; left: 0; width: 280px; height: calc(100vh - 60px); z-index: 50; box-shadow: 4px 0 20px rgba(0,0,0,0.5); }
+      .doc-sidebar.open { display: block; }
+      .sidebar-toggle { display: block; }
+      .md-content { padding: 28px 20px 60px; }
+      .file-path-bar { padding: 10px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <!-- Header -->
+    <header class="top-header">
+      <div class="logo-area">
+        <button class="sidebar-toggle" id="sidebarToggle">&#9776;</button>
+        <a href="index.html" style="text-decoration:none"><span class="logo">AirTrek</span></a>
+        <span class="logo-sub">Document Viewer</span>
+      </div>
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="app/index.html">Task Tracker</a>
+        <a href="docs.html" class="active">Documents</a>
+      </nav>
+    </header>
+
+    <!-- Sidebar (file browser) -->
+    <aside class="doc-sidebar" id="docSidebar"></aside>
+
+    <!-- Main doc area -->
+    <main class="doc-main" id="docMain">
+      <div class="doc-state" id="docState">
+        <h2>Select a document</h2>
+        <p>Choose a document from the sidebar or use a link from the home page.</p>
+      </div>
+    </main>
+  </div>
+
+  <script>
+  (function () {
+    'use strict';
+
+    // --- Manifest of all browsable markdown files ---
+    var MANIFEST = [
+      {
+        group: "Project",
+        files: [
+          { path: "README.md", title: "README" },
+          { path: "GETTING-STARTED.md", title: "Getting Started Guide" },
+          { path: "TASK-TRACKER.md", title: "Master Task Tracker" }
+        ]
+      },
+      {
+        group: "01 — Business & Strategy",
+        files: [
+          { path: "deliverables/01-business-strategy/TEMPLATE-business-document.md", title: "Template: Business Document" }
+        ]
+      },
+      {
+        group: "02 — Product & Design",
+        files: [
+          { path: "deliverables/02-product-design/TEMPLATE-product-document.md", title: "Template: Product Document" }
+        ]
+      },
+      {
+        group: "03 — Technical Architecture",
+        files: [
+          { path: "deliverables/03-technical-architecture/ARCHITECTURE.md", title: "System Architecture" },
+          { path: "deliverables/03-technical-architecture/control-narratives/CN-AIRTREK-001.md", title: "Control Narratives" },
+          { path: "deliverables/03-technical-architecture/TEMPLATE-technical-document.md", title: "Template: Technical Document" }
+        ]
+      },
+      {
+        group: "04 — Development",
+        files: [
+          { path: "deliverables/04-development/TEMPLATE-service-spec.md", title: "Template: Service Spec" }
+        ]
+      },
+      {
+        group: "05 — Content & Cultural",
+        files: [
+          { path: "deliverables/05-content-cultural/TEMPLATE-content-document.md", title: "Template: Content Document" }
+        ]
+      },
+      {
+        group: "06 — Operations",
+        files: [
+          { path: "deliverables/06-operations/TEMPLATE-operations-document.md", title: "Template: Operations Document" }
+        ]
+      },
+      {
+        group: "07 — Legal & Compliance",
+        files: [
+          { path: "deliverables/07-legal-compliance/TEMPLATE-policy-document.md", title: "Template: Policy Document" }
+        ]
+      },
+      {
+        group: "08 — Testing & Quality",
+        files: [
+          { path: "deliverables/08-testing-quality/TEMPLATE-test-document.md", title: "Template: Test Document" }
+        ]
+      },
+      {
+        group: "SOPs",
+        files: [
+          { path: "sop/SOP-INDEX.md", title: "SOP Master Index" },
+          { path: "sop/isa-88-batch/BATCH-DOCUMENT-PRODUCTION.md", title: "ISA-88 Batch Production" },
+          { path: "sop/isa-95-enterprise/ENTERPRISE-LEVELS.md", title: "ISA-95 Enterprise Levels" },
+          { path: "sop/procedures/SOP-DOCUMENT-CONTROL.md", title: "Document Control SOP" },
+          { path: "sop/forms/DOCUMENT-CHECKLIST.md", title: "Document Checklist" }
+        ]
+      }
+    ];
+
+    var docSidebar = document.getElementById('docSidebar');
+    var docMain = document.getElementById('docMain');
+    var sidebarToggle = document.getElementById('sidebarToggle');
+    var currentFile = null;
+
+    // --- Build Sidebar ---
+    function buildSidebar() {
+      docSidebar.innerHTML = '';
+      MANIFEST.forEach(function (group) {
+        var grp = document.createElement('div');
+        grp.className = 'sidebar-group';
+
+        var title = document.createElement('div');
+        title.className = 'sidebar-group-title';
+        title.innerHTML = '<span class="arrow">&#9662;</span> ' + group.group;
+        title.addEventListener('click', function () {
+          title.classList.toggle('collapsed');
+        });
+        grp.appendChild(title);
+
+        var items = document.createElement('div');
+        items.className = 'sidebar-group-items';
+
+        group.files.forEach(function (file) {
+          var link = document.createElement('a');
+          link.className = 'sidebar-link' + (currentFile === file.path ? ' active' : '');
+          link.href = 'docs.html?file=' + encodeURIComponent(file.path);
+          link.innerHTML = '<span class="file-icon">&#x1F4C4;</span> ' + escapeHtml(file.title);
+          link.addEventListener('click', function (e) {
+            e.preventDefault();
+            loadFile(file.path);
+            if (window.innerWidth <= 800) docSidebar.classList.remove('open');
+          });
+          items.appendChild(link);
+        });
+
+        grp.appendChild(items);
+        docSidebar.appendChild(grp);
+      });
+    }
+
+    // --- Load and render a markdown file ---
+    function loadFile(filePath) {
+      currentFile = filePath;
+      window.history.replaceState(null, '', 'docs.html?file=' + encodeURIComponent(filePath));
+      document.title = 'AirTrek — ' + filePath.split('/').pop();
+      updateActiveLink();
+      showLoading();
+
+      fetch(filePath)
+        .then(function (res) {
+          if (!res.ok) throw new Error('File not found: ' + filePath);
+          return res.text();
+        })
+        .then(function (md) {
+          renderMarkdown(filePath, md);
+        })
+        .catch(function (err) {
+          showError(err.message);
+        });
+    }
+
+    function showLoading() {
+      docMain.innerHTML = '<div class="doc-state"><div class="spinner"></div><p>Loading document...</p></div>';
+    }
+
+    function showError(msg) {
+      docMain.innerHTML = '<div class="doc-state"><h2>Could not load document</h2><p>' + escapeHtml(msg) + '</p></div>';
+    }
+
+    function updateActiveLink() {
+      var links = docSidebar.querySelectorAll('.sidebar-link');
+      links.forEach(function (l) {
+        var href = l.getAttribute('href');
+        l.classList.toggle('active', href === 'docs.html?file=' + encodeURIComponent(currentFile));
+      });
+    }
+
+    // --- Markdown to HTML (lightweight, no dependencies) ---
+    function renderMarkdown(filePath, md) {
+      var html = markdownToHtml(md);
+
+      // Build file path breadcrumb
+      var parts = filePath.split('/');
+      var pathBar = document.createElement('div');
+      pathBar.className = 'file-path-bar';
+      parts.forEach(function (part, i) {
+        if (i > 0) {
+          var sep = document.createElement('span');
+          sep.className = 'sep';
+          sep.textContent = '/';
+          pathBar.appendChild(sep);
+        }
+        var crumb = document.createElement('span');
+        crumb.className = 'crumb';
+        crumb.textContent = part;
+        pathBar.appendChild(crumb);
+      });
+
+      var content = document.createElement('div');
+      content.className = 'md-content';
+      content.innerHTML = html;
+
+      // Rewrite relative .md links to go through the docs viewer
+      var links = content.querySelectorAll('a');
+      links.forEach(function (a) {
+        var href = a.getAttribute('href');
+        if (href && href.endsWith('.md') && !href.startsWith('http')) {
+          a.href = 'docs.html?file=' + encodeURIComponent(resolvePath(filePath, href));
+          a.addEventListener('click', function (e) {
+            e.preventDefault();
+            loadFile(resolvePath(filePath, href));
+          });
+        }
+      });
+
+      docMain.innerHTML = '';
+      docMain.appendChild(pathBar);
+      docMain.appendChild(content);
+      docMain.scrollTop = 0;
+    }
+
+    // Resolve a relative path against the current file
+    function resolvePath(base, relative) {
+      if (relative.startsWith('/')) return relative.substring(1);
+      var baseParts = base.split('/');
+      baseParts.pop(); // remove filename
+      var relParts = relative.split('/');
+      relParts.forEach(function (part) {
+        if (part === '..') baseParts.pop();
+        else if (part !== '.') baseParts.push(part);
+      });
+      return baseParts.join('/');
+    }
+
+    // --- Lightweight Markdown Parser ---
+    function markdownToHtml(md) {
+      var lines = md.split('\n');
+      var html = [];
+      var inCodeBlock = false;
+      var codeBlockContent = [];
+      var inTable = false;
+      var tableRows = [];
+      var inList = false;
+      var listType = '';
+      var listItems = [];
+      var inBlockquote = false;
+      var blockquoteLines = [];
+
+      function flushList() {
+        if (!inList) return;
+        var tag = listType === 'ol' ? 'ol' : 'ul';
+        html.push('<' + tag + '>');
+        listItems.forEach(function (li) {
+          html.push('<li>' + inlineFormat(li) + '</li>');
+        });
+        html.push('</' + tag + '>');
+        inList = false;
+        listItems = [];
+      }
+
+      function flushBlockquote() {
+        if (!inBlockquote) return;
+        html.push('<blockquote><p>' + blockquoteLines.map(inlineFormat).join('<br>') + '</p></blockquote>');
+        inBlockquote = false;
+        blockquoteLines = [];
+      }
+
+      function flushTable() {
+        if (!inTable) return;
+        html.push('<table>');
+        tableRows.forEach(function (row, ri) {
+          var tag = ri === 0 ? 'th' : 'td';
+          var rowTag = ri === 0 ? 'thead' : (ri === 1 ? 'tbody' : '');
+          if (ri === 0) html.push('<thead>');
+          if (ri === 1) { html.push('</thead><tbody>'); }
+          // Skip separator row
+          if (ri === 1 && /^[\s|:-]+$/.test(row)) return;
+          html.push('<tr>');
+          var cells = row.split('|').filter(function (c, i, a) { return i > 0 && i < a.length - 1; });
+          if (cells.length === 0) cells = row.split('|').filter(Boolean);
+          cells.forEach(function (cell) {
+            html.push('<' + tag + '>' + inlineFormat(cell.trim()) + '</' + tag + '>');
+          });
+          html.push('</tr>');
+        });
+        html.push('</tbody></table>');
+        inTable = false;
+        tableRows = [];
+      }
+
+      for (var i = 0; i < lines.length; i++) {
+        var line = lines[i];
+
+        // Code blocks
+        if (line.trimStart().startsWith('```')) {
+          if (inCodeBlock) {
+            html.push('<pre><code>' + escapeHtml(codeBlockContent.join('\n')) + '</code></pre>');
+            codeBlockContent = [];
+            inCodeBlock = false;
+          } else {
+            flushList(); flushBlockquote(); flushTable();
+            inCodeBlock = true;
+          }
+          continue;
+        }
+        if (inCodeBlock) {
+          codeBlockContent.push(line);
+          continue;
+        }
+
+        // Blank line
+        if (line.trim() === '') {
+          flushList();
+          flushBlockquote();
+          if (inTable && tableRows.length > 0) flushTable();
+          continue;
+        }
+
+        // Table
+        if (line.includes('|') && line.trim().startsWith('|')) {
+          flushList(); flushBlockquote();
+          if (!inTable) inTable = true;
+          tableRows.push(line);
+          continue;
+        } else if (inTable) {
+          flushTable();
+        }
+
+        // Headings
+        var headingMatch = line.match(/^(#{1,6})\s+(.+)/);
+        if (headingMatch) {
+          flushList(); flushBlockquote(); flushTable();
+          var level = headingMatch[1].length;
+          var text = headingMatch[2].replace(/\s*#+\s*$/, '');
+          var slug = text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
+          html.push('<h' + level + ' id="' + slug + '">' + inlineFormat(text) + '</h' + level + '>');
+          continue;
+        }
+
+        // Horizontal rule
+        if (/^(-{3,}|_{3,}|\*{3,})$/.test(line.trim())) {
+          flushList(); flushBlockquote(); flushTable();
+          html.push('<hr>');
+          continue;
+        }
+
+        // Blockquote
+        if (line.trimStart().startsWith('>')) {
+          flushList(); flushTable();
+          inBlockquote = true;
+          blockquoteLines.push(line.replace(/^>\s?/, ''));
+          continue;
+        } else if (inBlockquote) {
+          flushBlockquote();
+        }
+
+        // Unordered list
+        var ulMatch = line.match(/^(\s*)[-*+]\s+(.+)/);
+        if (ulMatch) {
+          flushBlockquote(); flushTable();
+          if (!inList || listType !== 'ul') {
+            flushList();
+            inList = true;
+            listType = 'ul';
+          }
+          listItems.push(ulMatch[2]);
+          continue;
+        }
+
+        // Ordered list
+        var olMatch = line.match(/^(\s*)\d+[.)]\s+(.+)/);
+        if (olMatch) {
+          flushBlockquote(); flushTable();
+          if (!inList || listType !== 'ol') {
+            flushList();
+            inList = true;
+            listType = 'ol';
+          }
+          listItems.push(olMatch[2]);
+          continue;
+        }
+
+        // Checkbox list
+        var cbMatch = line.match(/^(\s*)[-*]\s+\[([ xX])\]\s+(.+)/);
+        if (cbMatch) {
+          flushBlockquote(); flushTable();
+          if (!inList) { inList = true; listType = 'ul'; }
+          var checked = cbMatch[2] !== ' ' ? ' checked disabled' : ' disabled';
+          listItems.push('<input type="checkbox"' + checked + '> ' + cbMatch[3]);
+          continue;
+        }
+
+        // Paragraph
+        flushList(); flushBlockquote(); flushTable();
+        html.push('<p>' + inlineFormat(line) + '</p>');
+      }
+
+      // Flush remaining
+      if (inCodeBlock) {
+        html.push('<pre><code>' + escapeHtml(codeBlockContent.join('\n')) + '</code></pre>');
+      }
+      flushList();
+      flushBlockquote();
+      flushTable();
+
+      return html.join('\n');
+    }
+
+    // --- Inline Markdown Formatting ---
+    function inlineFormat(text) {
+      if (!text) return '';
+      // Escape HTML first
+      text = escapeHtml(text);
+      // Bold + italic
+      text = text.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
+      // Bold
+      text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      text = text.replace(/__(.+?)__/g, '<strong>$1</strong>');
+      // Italic
+      text = text.replace(/\*(.+?)\*/g, '<em>$1</em>');
+      text = text.replace(/_(.+?)_/g, '<em>$1</em>');
+      // Strikethrough
+      text = text.replace(/~~(.+?)~~/g, '<del>$1</del>');
+      // Inline code
+      text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+      // Links
+      text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, function (m, label, url) {
+        if (url.endsWith('.md') && !url.startsWith('http')) {
+          return '<a href="docs.html?file=' + encodeURIComponent(url) + '">' + label + '</a>';
+        }
+        return '<a href="' + url + '">' + label + '</a>';
+      });
+      // Images
+      text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
+      // Emoji shortcodes (basic status badges from the tracker)
+      text = text.replace(/:x:/g, '<span style="color:var(--text3)">&#x274C;</span>');
+      text = text.replace(/:white_check_mark:/g, '<span style="color:var(--green)">&#x2705;</span>');
+      text = text.replace(/:construction:/g, '<span style="color:var(--orange)">&#x1F6A7;</span>');
+      text = text.replace(/:pause_button:/g, '<span style="color:var(--orange)">&#x23F8;</span>');
+      text = text.replace(/:eyes:/g, '<span style="color:var(--purple)">&#x1F440;</span>');
+      return text;
+    }
+
+    function escapeHtml(text) {
+      return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // --- Sidebar toggle (mobile) ---
+    sidebarToggle.addEventListener('click', function () {
+      docSidebar.classList.toggle('open');
+    });
+
+    // --- Init ---
+    buildSidebar();
+
+    var params = new URLSearchParams(window.location.search);
+    var fileParam = params.get('file');
+    if (fileParam) {
+      loadFile(fileParam);
+    }
+  })();
+  </script>
+</body>
+</html>
