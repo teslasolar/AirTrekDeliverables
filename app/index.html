@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AirTrek — Enterprise Task Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/chat.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <span class="topbar-logo">AirTrek</span>
+        <span class="topbar-badge">ISA-88 / ISA-95</span>
+        <span class="topbar-badge">SOP Managed</span>
+      </div>
+      <div class="topbar-right">
+        <input type="text" class="topbar-search" placeholder="Search deliverables...">
+        <div class="view-toggle">
+          <button data-view="dashboard" class="active">Dashboard</button>
+          <button data-view="list">List</button>
+          <button data-view="kanban">Board</button>
+          <button data-view="investor">Investor</button>
+        </div>
+        <button class="chat-toggle-btn" id="chatToggle" title="AI Assistant">AI</button>
+      </div>
+    </header>
+
+    <!-- Sidebar -->
+    <nav class="sidebar"></nav>
+
+    <!-- Main Content -->
+    <main class="main-content"></main>
+  </div>
+
+  <!-- Detail Panel -->
+  <div class="detail-overlay"></div>
+  <div class="detail-panel">
+    <div class="detail-header">
+      <div>
+        <div class="detail-title"></div>
+        <div class="detail-id"></div>
+      </div>
+      <button class="detail-close">&times;</button>
+    </div>
+    <div class="detail-body"></div>
+  </div>
+
+  <!-- Chat Window -->
+  <div class="chat-window" id="chatWindow">
+    <div class="chat-header">
+      <span class="chat-title">AirTrek AI Assistant</span>
+      <span class="chat-badge">WebLLM</span>
+      <button class="chat-close" id="chatClose">&times;</button>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="chat-msg system">
+        <div class="chat-msg-content">
+          Welcome to the AirTrek AI Assistant. I can help you understand
+          deliverables, ISA-88 control narratives, project status, and
+          the AirTrek architecture. Ask me anything about the project.
+        </div>
+      </div>
+    </div>
+    <div class="chat-input-area">
+      <input type="text" class="chat-input" id="chatInput"
+             placeholder="Ask about AirTrek deliverables...">
+      <button class="chat-send" id="chatSend">Send</button>
+    </div>
+    <div class="chat-status" id="chatStatus">Ready</div>
+  </div>
+
+  <script src="js/app.js"></script>
+  <script src="js/chat.js"></script>
+</body>
+</html>
