@@ -1,0 +1,50 @@
+<div class="section qr-section">
+  <div class="qr-header-row">
+    <div>
+      <h2 class="section-title">QR Matrix System</h2>
+      <p class="section-desc">
+        Multidimensional QR codes encoding deliverable states, agent assignments,
+        and production metrics. Each code is scannable by CV agents or humans to
+        reconstruct full context.
+      </p>
+    </div>
+    <div class="qr-legend">
+      <span class="qr-legend-item"><span class="qr-mini-dot" style="background:#6b7084"></span>Idle</span>
+      <span class="qr-legend-item"><span class="qr-mini-dot" style="background:#F59E0B"></span>Held</span>
+      <span class="qr-legend-item"><span class="qr-mini-dot" style="background:#4F7BF7"></span>Running</span>
+      <span class="qr-legend-item"><span class="qr-mini-dot" style="background:#7C5CFC"></span>Completing</span>
+      <span class="qr-legend-item"><span class="qr-mini-dot" style="background:#34D399"></span>Complete</span>
+    </div>
+  </div>
+
+  <!-- View Tabs -->
+  <div class="qr-view-tabs">
+    <button class="qr-view-tab active" data-view="overview">Overview</button>
+    <button class="qr-view-tab" data-view="phases">Phases</button>
+    <button class="qr-view-tab" data-view="agents">Agents</button>
+    <button class="qr-view-tab" data-view="deliverables">All Deliverables</button>
+  </div>
+
+  <!-- QR Matrix (rendered by js/qr-matrix.js) -->
+  <div id="qrMatrixContainer" class="qr-matrix-container" data-view="overview">
+    <div class="factory-loading">
+      <div class="spinner"></div>
+      Generating QR matrix...
+    </div>
+  </div>
+
+  <div class="qr-footer">
+    <div class="qr-footer-note">
+      <strong>How it works:</strong> Each QR code contains a base64-encoded JSON payload with schema version,
+      type identifier, state data, and timestamp. CV agents scan codes to read status; human agents scan
+      to open the detail view. Payload schema: <code>{ v, t, id, s, p, c, ts }</code>
+    </div>
+    <div class="qr-footer-agents">
+      <span class="qr-agent-badge">&#x1F464; Human</span>
+      <span class="qr-agent-badge">&#x1F441; CV</span>
+      <span class="qr-agent-badge">&#x1F9E0; LLM</span>
+      <span class="qr-agent-badge">&#x2699; Auto</span>
+      <span class="qr-agent-badge">&#x1F50D; Reviewer</span>
+    </div>
+  </div>
+</div>

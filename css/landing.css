@@ -298,6 +298,86 @@ a:hover { text-decoration: underline; }
 .status-footer-note { font-size: 0.75rem; color: var(--text3); max-width: 70%; }
 .btn-sm { padding: 8px 18px; font-size: 0.8rem; }
 
+/* --- QR Matrix System --- */
+.qr-section { border-top: 1px solid var(--border); }
+.qr-header-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; flex-wrap: wrap; margin-bottom: 8px; }
+.qr-legend { display: flex; gap: 12px; flex-wrap: wrap; padding-top: 8px; }
+.qr-legend-item { display: flex; align-items: center; gap: 5px; font-size: 0.73rem; color: var(--text3); }
+.qr-mini-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+
+.qr-view-tabs { display: flex; gap: 4px; margin-bottom: 20px; flex-wrap: wrap; }
+.qr-view-tab {
+  padding: 8px 18px; border-radius: 8px; font-size: 0.85rem; font-weight: 500;
+  background: var(--bg3); border: 1px solid var(--border); color: var(--text2);
+  cursor: pointer; transition: all 0.2s; font-family: var(--font);
+}
+.qr-view-tab:hover { border-color: var(--border2); color: var(--text); }
+.qr-view-tab.active { background: var(--blue); color: white; border-color: var(--blue); }
+
+/* QR Grids */
+.qr-grid { display: grid; gap: 14px; }
+.qr-grid-overview { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+.qr-grid-deliverables { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+.qr-grid-agents { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+.qr-grid-phases { display: flex; flex-direction: column; gap: 16px; }
+
+/* QR Tiles */
+.qr-tile {
+  background: var(--bg3); border: 1px solid var(--border); border-radius: 10px;
+  padding: 14px; display: flex; flex-direction: column; align-items: center;
+  text-align: center; transition: all 0.2s;
+}
+.qr-tile:hover { border-color: var(--border2); transform: translateY(-1px); }
+.qr-tile-large { grid-column: span 2; }
+.qr-canvas { display: block; margin: 0 auto 8px; image-rendering: pixelated; }
+.qr-tile-small .qr-canvas { width: 72px; height: 72px; }
+.qr-tile-medium .qr-canvas { width: 96px; height: 96px; }
+.qr-tile-large .qr-canvas { width: 140px; height: 140px; }
+.qr-tile-title { font-size: 0.8rem; font-weight: 600; margin-bottom: 2px; }
+.qr-tile-sub { font-size: 0.7rem; color: var(--text3); }
+
+/* Agent Cards */
+.qr-agent-card {
+  background: var(--bg3); border: 1px solid var(--border); border-radius: 10px;
+  padding: 18px; transition: all 0.2s;
+}
+.qr-agent-card:hover { border-color: var(--border2); }
+.qr-agent-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.qr-agent-emoji { font-size: 1.5rem; }
+.qr-agent-name { font-size: 0.9rem; font-weight: 600; }
+.qr-agent-count { font-size: 0.75rem; color: var(--text3); }
+.qr-agent-canvas { display: block; margin: 0 auto 12px; image-rendering: pixelated; width: 120px; height: 120px; }
+.qr-agent-items { display: flex; flex-direction: column; gap: 4px; }
+.qr-agent-item { font-size: 0.75rem; color: var(--text2); display: flex; align-items: center; gap: 6px; }
+.qr-more { color: var(--text3); font-style: italic; }
+
+/* Phase Cards */
+.qr-phase-card {
+  background: var(--bg3); border: 1px solid var(--border); border-radius: 10px;
+  padding: 18px; display: flex; align-items: center; gap: 20px; transition: all 0.2s;
+}
+.qr-phase-card:hover { border-color: var(--border2); }
+.qr-phase-canvas { display: block; image-rendering: pixelated; width: 100px; height: 100px; flex-shrink: 0; }
+.qr-phase-info { flex: 1; }
+.qr-phase-name { font-size: 1rem; font-weight: 600; margin-bottom: 8px; }
+.qr-phase-bar-bg { height: 6px; background: var(--bg4); border-radius: 3px; overflow: hidden; margin-bottom: 10px; }
+.qr-phase-bar-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+.qr-phase-stats { display: flex; gap: 12px; flex-wrap: wrap; }
+.qr-phase-stat { font-size: 0.75rem; color: var(--text2); display: flex; align-items: center; gap: 5px; }
+
+/* QR Footer */
+.qr-footer {
+  margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap;
+}
+.qr-footer-note { font-size: 0.75rem; color: var(--text3); max-width: 65%; line-height: 1.6; }
+.qr-footer-note code { font-family: var(--mono); background: var(--bg4); padding: 1px 5px; border-radius: 3px; font-size: 0.7rem; }
+.qr-footer-agents { display: flex; gap: 6px; flex-wrap: wrap; }
+.qr-agent-badge {
+  font-size: 0.7rem; padding: 4px 10px; border-radius: 8px;
+  background: var(--bg4); border: 1px solid var(--border); color: var(--text3);
+}
+
 @media (max-width: 768px) {
   .hero h1 { font-size: 2rem; }
   .hero { padding: 48px 20px 36px; }
