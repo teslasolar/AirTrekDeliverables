@@ -41,33 +41,40 @@
     chatWindow.classList.remove('open');
   });
 
-  // --- Init WebLLM engine ---
+  // --- Init WebLLM engine via AirTrekLLM + Willow ---
   function initEngine() {
-    setStatus('Checking WebLLM availability...', 'loading');
+    setStatus('Initializing Willow + WebLLM...', 'loading');
 
-    // Try to load WebLLM from CDN
-    if (typeof window.webllm !== 'undefined') {
-      loadWebLLM();
-    } else {
-      var script = document.createElement('script');
-      script.src = 'https://esm.run/@anthropic-ai/sdk';
-      script.onload = function () { loadWebLLM(); };
-      script.onerror = function () {
-        setStatus('Using built-in knowledge base (no WebLLM)', 'ready');
-        useWebLLM = false;
-      };
-
-      // Fallback: use built-in knowledge
+    if (!window.AirTrekLLM) {
       setStatus('Ready — using project knowledge base', 'ready');
       useWebLLM = false;
+      return;
     }
-  }
 
-  function loadWebLLM() {
-    // WebLLM integration point
-    // When WebLLM is available, this initializes the local model
-    setStatus('Ready — using project knowledge base', 'ready');
-    useWebLLM = false;
+    // Check WebGPU and attempt to load local LLM
+    var info = window.AirTrekLLM.getModelInfo();
+    if (info.hasWebGPU) {
+      setStatus('WebGPU detected — loading local model...', 'loading');
+      window.AirTrekLLM.loadModel(null,
+        function onProgress(report) {
+          var pct = Math.round((report.progress || 0) * 100);
+          setStatus('Loading model: ' + pct + '%', 'loading');
+        },
+        function onComplete() {
+          engine = true;
+          useWebLLM = true;
+          var willowTag = info.willow && info.willow.gpu ? ' + GPU compute' : '';
+          setStatus('Local LLM ready (WebGPU)' + willowTag, 'ready');
+        },
+        function onError() {
+          setStatus('Ready — Willow active, knowledge base mode', 'ready');
+          useWebLLM = false;
+        }
+      );
+    } else {
+      setStatus('Ready — Willow active, knowledge base mode (no WebGPU)', 'ready');
+      useWebLLM = false;
+    }
   }
 
   // --- Send message ---
@@ -91,15 +98,40 @@
 
     showTyping();
 
-    // Process with delay for natural feel
-    setTimeout(function () {
-      var response = generateResponse(text);
-      hideTyping();
-      appendMessage('assistant', response);
-      isLoading = false;
-      chatSend.disabled = false;
-      setStatus('Ready', 'ready');
-    }, 600 + Math.random() * 800);
+    // Use AirTrekLLM (Willow pre-process → WebLLM or fallback → Willow post-process)
+    if (useWebLLM && window.AirTrekLLM && window.AirTrekLLM.isLoaded()) {
+      var streamedText = '';
+      window.AirTrekLLM.generate(text,
+        function onChunk(chunk) {
+          streamedText += chunk;
+        },
+        function onComplete(fullResponse) {
+          hideTyping();
+          appendMessage('assistant', fullResponse);
+          isLoading = false;
+          chatSend.disabled = false;
+          setStatus('Ready', 'ready');
+        },
+        function onError() {
+          hideTyping();
+          var response = generateResponse(text);
+          appendMessage('assistant', response);
+          isLoading = false;
+          chatSend.disabled = false;
+          setStatus('Ready', 'ready');
+        }
+      );
+    } else {
+      // Fallback with natural delay
+      setTimeout(function () {
+        var response = generateResponse(text);
+        hideTyping();
+        appendMessage('assistant', response);
+        isLoading = false;
+        chatSend.disabled = false;
+        setStatus('Ready', 'ready');
+      }, 600 + Math.random() * 800);
+    }
   }
 
   // --- Project-aware response generation ---
